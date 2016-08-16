@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="video-js.css" rel="stylesheet">
+    <title>Embedded Player</title>
+    <script type="text/javascript">
+        function controlmsg(ev) {
+            if (ev.data == 'play') {
+                videojs('player').ready(function() {
+                    this.play();
+                });
+            } else if (ev.data == 'pause') {
+                videojs('player').ready(function() {
+                    this.pause();
+                });
+            } else if (ev.data == 'lowres') {
+                videojs('player').ready(function() {
+                    this.src([
+                        {'type': 'video/webm', 'src': '/sample-video-lowres.webm'},
+                        {'type': 'video/mp4', 'src': '/sample-video-lowres.mp4'},
+                    ]);
+                    this.play();
+                });
+            } else if (ev.data == 'highres') {
+                videojs('player').ready(function() {
+                    this.src([
+                        {'type': 'video/webm', 'src': '/sample-video.webm'},
+                        {'type': 'video/mp4', 'src': '/sample-video.mp4'},
+                    ]);
+                    this.play();
+                });
+            }
+        }
+
+        if (window.addEventListener) {
+            window.addEventListener('message', controlmsg, false);
+        } else {
+            window.attachEvent('message', controlmsg, false);
+        }
+
+        // Let server know this browser before playback
+        var playerstat = new XMLHttpRequest();
+        var params = 'width=' + screen.width;
+        params += '&height=' + screen.height;
+        playerstat.open('POST', '/playerstat?' + params);
+        playerstat.send(null);
+        playerstat.onreadystatechange = function() {
+            console.log(playerstat);
+        };
+
+        // During playback, report player progress back to server.
+        setInterval(function() {
+            var playbackstat = new XMLHttpRequest();
+            var player = videojs('player');
+            var params = 'currenttime=' + player.currentTime();
+            params += '&currenttype=' + player.currentType();
+            params += '&width=' + player.dimension('width');
+            params += '&height=' + player.dimension('height');
+            playbackstat.open('POST', '/playbackstat?' + params);
+            playbackstat.send(null);
+            playbackstat.onreadystatechange = function() {
+                console.log(playbackstat);
+            };
+        }, 5000);
+    </script>
+</head>
+<body>
+    <video id="player" class="video-js" controls autoplay preload="auto" width="1280" height="720" data-setup="{}">
+        <source src="sample-video.webm" type="video/webm">
+        <source src="sample-video.mp4" type="video/mp4">
+        <p class="vjs-no-js">nojs triggered</p>
+    </video>
+    <script src="video.js"></script>
+</body>
+</html>

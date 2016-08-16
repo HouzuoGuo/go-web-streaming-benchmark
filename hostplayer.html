@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Host player</title>
+</head>
+<body>
+    <p>
+        <button onclick="document.getElementById('player').contentWindow.postMessage('play', '*');">Play</button>
+        <button onclick="document.getElementById('player').contentWindow.postMessage('pause', '*');">Pause</button>
+        <button onclick="document.getElementById('player').contentWindow.postMessage('lowres', '*');">Low Resolution</button>
+        <button onclick="document.getElementById('player').contentWindow.postMessage('highres', '*');">High Resolution</button>
+    </p>
+    <iframe id="player" src="/player.html" style="width: 1300px; height:740px;"></iframe>
+</body>
+</html>
