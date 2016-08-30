@@ -24,7 +24,7 @@ func main() {
 	})
 	http.HandleFunc("/randvideo", func(w http.ResponseWriter, r *http.Request) {
 		// Serve a random video among 99 video files. cpsamples.sh makes the 99 copies.
-		http.ServeFile(w, r, "sample-video-"+strconv.Itoa(1+rand.Intn(98))+".mp4")
+		http.ServeFile(w, r, "sample-video-"+strconv.Itoa(1+rand.Intn(98))+".webm")
 	})
 	http.Handle("/", http.FileServer(http.Dir(".")))
 
